@@ -5,35 +5,43 @@ namespace App\DataFixtures;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture
 {
+
+    public function __construct(
+        private UserPasswordHasherInterface $passwordHasher
+    ) {}
+
     public function load(ObjectManager $manager): void
     {
         $users = [
-          [
-              'name' => 'John Doe',
-              'password' => 'secret123'
+            [
+                'username' => 'user1',
+                'password' => 'secret123'
 
-          ],
-          [
-              'name' => 'Jane Doe1',
-              'password' => 'secret123'
+            ],
+            [
+                'username' => 'user2',
+                'password' => 'secret123'
 
-          ],
-          [
-              'name' => 'Jane Doe1',
-              'password' => 'secret123'
+            ],
+            [
+                'username' => 'user3',
+                'password' => 'secret123'
 
-          ],
+            ],
         ];
 
         foreach ($users as $user) {
-            $user = (new User())
-                ->setPassword($user['password'])
+            $entity = new User();
+            $entity->setUsername($user['username'])
+                ->setPassword(
+                    $this->passwordHasher->hashPassword($entity, $user['password'])
+                )
             ;
-
-            $manager->persist($user);
+            $manager->persist($entity);
         }
         $manager->flush();
     }
