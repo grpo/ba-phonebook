@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\EventListener;
 
 use App\Entity\User;
@@ -9,9 +11,9 @@ use Doctrine\ORM\Events;
 
 final class UserUpdateListener
 {
-    #[AsEntityListener(event: Events::postUpdate, method: 'postUpdate', entity: User::class)]
+    #[AsEntityListener(event: Events::preUpdate, method: 'postUpdate', entity: User::class)]
     public function postUpdate(User $user, PreUpdateEventArgs $event): void
     {
-        $user->setUpdatedAt();
+        $user->setUpdatedAt(new \DateTime());
     }
 }

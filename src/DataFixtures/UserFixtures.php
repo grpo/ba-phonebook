@@ -18,17 +18,17 @@ class UserFixtures extends Fixture
     {
         $users = [
             [
-                'username' => 'user1',
+                'username' => 'user7',
                 'password' => 'secret123'
 
             ],
             [
-                'username' => 'user2',
+                'username' => 'user8',
                 'password' => 'secret123'
 
             ],
             [
-                'username' => 'user3',
+                'username' => 'user9',
                 'password' => 'secret123'
 
             ],

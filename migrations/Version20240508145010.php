@@ -7,11 +7,14 @@ namespace DoctrineMigrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-final class Version20240507105910 extends AbstractMigration
+/**
+ * Auto-generated Migration: Please modify to your needs!
+ */
+final class Version20240508145010 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Create users table';
+        return '';
     }
 
     public function up(Schema $schema): void
@@ -24,6 +27,7 @@ final class Version20240507105910 extends AbstractMigration
           updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
           PRIMARY KEY(id)
         )');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_1483A5E9F85E0677 ON "users" (username)');
         $this->addSql('COMMENT ON COLUMN "users".id IS \'(DC2Type:uuid)\'');
         $this->addSql('COMMENT ON COLUMN "users".created_at IS \'(DC2Type:datetime_immutable)\'');
     }
