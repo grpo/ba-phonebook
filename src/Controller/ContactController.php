@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace App\Controller;
 
 use App\Dto\Input\ContactInputDto;
@@ -14,7 +13,6 @@ use App\Service\ApiSerializer;
 use App\Service\UserProvider;
 use App\Service\Validator;
 use Doctrine\ORM\EntityManagerInterface;
-use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,9 +55,18 @@ class ContactController extends ApiController
         ContactRepository $contactRepository,
     ): JsonResponse {
         $user = $this->userProvider->getUserFormRequest($request);
-        $contacts = $contactRepository->findAllUserContacts($user);
+        $userContacts = $contactRepository->findAllUserContacts($user);
+        $sharedWithUser = $contactRepository->findContactsSharedWithUser($user);
 
-        return new JsonResponse(json_decode($this->serializer->objectToJson($contacts, ['contact'])), Response::HTTP_OK);
+        $payload = [];
+        if ($userContacts) {
+            $payload['contacts'] = $userContacts;
+        }
+        if ($sharedWithUser) {
+            $payload['sharedContacts'] = $sharedWithUser;
+        }
+
+        return new JsonResponse(json_decode($this->serializer->objectToJson($payload, ['contact'])), Response::HTTP_OK);
     }
 
     #[Route('/{contact}', name: 'delete', methods: ['DELETE'])]
@@ -95,7 +102,6 @@ class ContactController extends ApiController
         Request $request,
         Validator $validator,
         ContactDtoFactory $contactDtoFactory,
-        SerializerInterface $serializer
     ): JsonResponse {
         if ($contact->getUser() !== $this->userProvider->getUserFormRequest($request)) {
             return new JsonResponse([], Response::HTTP_UNAUTHORIZED);
