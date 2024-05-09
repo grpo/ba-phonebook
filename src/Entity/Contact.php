@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\ContactRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\Type;
@@ -37,6 +39,14 @@ class Contact
     #[Type(User::class)]
     #[Groups(['default'])]
     private User $user;
+
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    private Collection $sharedWith;
+
+    public function __construct()
+    {
+        $this->sharedWith = new ArrayCollection();
+    }
 
     public function getId(): string
     {
@@ -73,6 +83,28 @@ class Contact
     public function setUser(User $user): self
     {
         $this->user = $user;
+        return $this;
+    }
+
+    public function getSharedWith(): Collection
+    {
+        return $this->sharedWith;
+    }
+
+    public function shareWith(User $user): self
+    {
+        if (!$this->sharedWith->contains($user)) {
+            $this->sharedWith[] = $user;
+        }
+        return $this;
+    }
+
+    public function unShareWith(User $user): self
+    {
+        if ($this->sharedWith->contains($user)) {
+            $this->sharedWith->removeElement($user);
+        }
+
         return $this;
     }
 }
