@@ -66,7 +66,7 @@ but are considered a big plus.
 
 #### /api/v1/contact/{id} 
 - Actions: ['GET','PUT', 'DELETE']
-- POST/PUT BODY:
+- PUT BODY:
 ```json
 {
     "username": "user7",
