@@ -19,7 +19,7 @@ class ContactShareInputDto extends AbstractDTO
         AbstractSerializationConstants::GROUP_DEFAULT,
         AbstractSerializationConstants::GROUP_CONTACT,
     ])]
-    private string $userId;
+    private ?string $userId = null;
 
     #[Constraint\Uuid]
     #[Constraint\NotBlank]
@@ -29,24 +29,24 @@ class ContactShareInputDto extends AbstractDTO
         AbstractSerializationConstants::GROUP_DEFAULT,
         AbstractSerializationConstants::GROUP_CONTACT,
     ])]
-    private string $contactId;
+    private ?string $contactId = null;
 
-    public function getUserId(): string
+    public function getUserId(): ?string
     {
         return $this->userId;
     }
 
-    public function setUserId(string $userId): void
+    public function setUserId(?string $userId): void
     {
         $this->userId = $userId;
     }
 
-    public function getContactId(): string
+    public function getContactId(): ?string
     {
         return $this->contactId;
     }
 
-    public function setContactId(string $contactId): void
+    public function setContactId(?string $contactId): void
     {
         $this->contactId = $contactId;
     }
