@@ -7,8 +7,6 @@ namespace App\Repository;
 use App\Entity\Contact;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,5 +35,23 @@ class ContactRepository extends ServiceEntityRepository
             ->setParameter('id', $user->getId())
             ->getQuery()
             ->getResult();
+    }
+
+    public function findOneContactSharedWithUser(User $user, Contact $contact): mixed
+    {
+        // TODO write a legit query
+//        return $this->createQueryBuilder('c')
+//            ->innerJoin('c.sharedWith', 's', 'WITH', 's.id = :id')
+//            ->setParameter('id', $user->getId())
+//            ->where('c.id = :id')
+//            ->setParameter('id', $contact->getId())
+//            ->getQuery()
+//            ->getResult();
+        $allContacts = $this->findContactsSharedWithUser($user);
+        foreach ($allContacts as $con) {
+            if ($con->getId() === $contact->getId()) {
+                return $con;
+            }
+        }
     }
 }

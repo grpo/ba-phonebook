@@ -4,24 +4,30 @@ declare(strict_types=1);
 
 namespace App\Dto\Input;
 
-use App\Dto\DtoInterface;
-use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\Type;
-use Symfony\Component\Validator\Constraints as Constraints;
+use App\Constants\AbstractSerializationConstants;
+use App\Dto\AbstractDTO;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Constraint;
 
-class ContactInputDto implements DtoInterface
+class ContactInputDto extends AbstractDTO
 {
-    #[Constraints\NotNull]
-    #[Constraints\NotBlank]
-    #[Type('string')]
-    #[Groups(['default', 'contact'])]
+    #[Constraint\NotNull]
+    #[Constraint\NotBlank]
+    #[JMS\Type(AbstractSerializationConstants::TYPE_STRING)]
+    #[JMS\Groups([
+        AbstractSerializationConstants::GROUP_DEFAULT,
+        AbstractSerializationConstants::GROUP_CONTACT,
+    ])]
     private ?string $name = null;
 
-    #[Constraints\NotNull]
-    #[Constraints\NotBlank]
-    #[Constraints\Length(min: 8, max: 16)]
-    #[Type('string')]
-    #[Groups(['default', 'contact'])]
+    #[Constraint\NotNull]
+    #[Constraint\NotBlank]
+    #[Constraint\Length(min: 8, max: 16)]
+    #[JMS\Type(AbstractSerializationConstants::TYPE_STRING)]
+    #[JMS\Groups([
+        AbstractSerializationConstants::GROUP_DEFAULT,
+        AbstractSerializationConstants::GROUP_CONTACT,
+    ])]
     private ?string $phone = null;
 
     public function getName(): ?string

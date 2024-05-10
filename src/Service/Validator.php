@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Dto\DtoInterface;
+use App\Dto\AbstractDTO;
 use App\Exception\InvalidRequestBodyException;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -12,11 +12,11 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class Validator
 {
     public function __construct(
-       private ValidatorInterface $validator,
-       private ApiSerializer     $serializer,
+       private readonly ValidatorInterface $validator,
+       private readonly ApiSerializer      $serializer,
     ) {}
 
-    public function validateDto(DtoInterface $dto): void
+    public function validateDto(AbstractDTO $dto): void
     {
         $errors = $this->validator->validate($dto);
         if (count($errors) > 0) {

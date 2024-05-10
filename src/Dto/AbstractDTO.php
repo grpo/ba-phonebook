@@ -2,7 +2,7 @@
 
 namespace App\Dto;
 
-interface DtoInterface
+abstract class AbstractDTO
 {
 
 }

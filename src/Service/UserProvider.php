@@ -12,9 +12,9 @@ use Symfony\Component\HttpFoundation\Request;
 class UserProvider
 {
     public function __construct(
-        private UserRepository $userRepository,
-        private RequestParser $requestParser,
-        private JWTTokenManagerInterface $tokenManager,
+        private readonly UserRepository           $userRepository,
+        private readonly RequestHeaderParser      $requestParser,
+        private readonly JWTTokenManagerInterface $tokenManager,
     ) {}
 
     public function getUserFormRequest(Request $request): ?User

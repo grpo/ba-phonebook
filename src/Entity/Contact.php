@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Constants\AbstractSerializationConstants;
 use App\Repository\ContactRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections as Doctrine;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation as JMS;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
@@ -21,31 +20,42 @@ class Contact
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ORM\Column(type: 'uuid', unique: true)]
-    #[Type('string')]
-    #[Groups(['contact', 'default'])]
+    #[JMS\Type(AbstractSerializationConstants::TYPE_STRING)]
+    #[JMS\Groups([
+        AbstractSerializationConstants::GROUP_DEFAULT,
+        AbstractSerializationConstants::GROUP_CONTACT,
+    ])]
     private string $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Type('string')]
-    #[Groups(['contact', 'default'])]
+    #[JMS\Type(AbstractSerializationConstants::TYPE_STRING)]
+    #[JMS\Groups([
+        AbstractSerializationConstants::GROUP_DEFAULT,
+        AbstractSerializationConstants::GROUP_CONTACT,
+    ])]
     private string $phone;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Type('string')]
-    #[Groups(['contact', 'default'])]
+    #[JMS\Type(AbstractSerializationConstants::TYPE_STRING)]
+    #[JMS\Groups([
+        AbstractSerializationConstants::GROUP_DEFAULT,
+        AbstractSerializationConstants::GROUP_CONTACT,
+    ])]
     private string $name;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'contacts')]
-    #[Type(User::class)]
-    #[Groups(['default'])]
+    #[JMS\Type(AbstractSerializationConstants::TYPE_STRING)]
+    #[JMS\Groups([
+        AbstractSerializationConstants::GROUP_DEFAULT,
+    ])]
     private User $user;
 
     #[ORM\ManyToMany(targetEntity: User::class)]
-    private Collection $sharedWith;
+    private Doctrine\Collection $sharedWith;
 
     public function __construct()
     {
-        $this->sharedWith = new ArrayCollection();
+        $this->sharedWith = new Doctrine\ArrayCollection();
     }
 
     public function getId(): string
@@ -86,7 +96,7 @@ class Contact
         return $this;
     }
 
-    public function getSharedWith(): Collection
+    public function getSharedWith(): Doctrine\Collection
     {
         return $this->sharedWith;
     }
