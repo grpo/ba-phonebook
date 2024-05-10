@@ -17,5 +17,4 @@ class ContactFactory
             ->setPhone($contactDto->getPhone())
             ->setUser($user);
     }
-
 }
