@@ -5,14 +5,23 @@ namespace App\Tests\Service;
 use App\Entity\Contact;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ContactControllerPOSTTest extends WebTestCase
 {
+    const NAME_SIMONYTE = 'Simonyte';
+    const PHONE = '+37066611111';
+    const API_V_1_CONTACT_URI = '/api/v1/contact';
+    const TOO_LONG_PHONE = '111111111111111111111111111111111111111111111';
+    const API_LOGIN_URI = '/api/login';
+    const EXISTING_USERNAME = 'user7';
+    const EXISTING_USER_PASSWORD = 'secret123';
+
     public function testAuthorizationNotSet(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/api/v1/contact');
+        $crawler = $client->request('GET', self::API_V_1_CONTACT_URI);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
@@ -20,8 +29,8 @@ class ContactControllerPOSTTest extends WebTestCase
     public function testCreateContactCorrectBody(): void
     {
         $body = [
-            'name' => 'Simonyte',
-            'phone' => '+37066611111',
+            'name' => self::NAME_SIMONYTE,
+            'phone' => self::PHONE,
         ];
         $client = $this->makePostRequestWithBody($body);
         $response = $client->getResponse();
@@ -29,8 +38,8 @@ class ContactControllerPOSTTest extends WebTestCase
 
         $persistedContact = $this->getEntityManager()->getRepository(Contact::class)->find($contact['id']);
 
-        $this->assertEquals('Simonyte', $persistedContact->getName());
-        $this->assertEquals('+37066611111', $persistedContact->getPhone());
+        $this->assertEquals(self::NAME_SIMONYTE, $persistedContact->getName());
+        $this->assertEquals(self::PHONE, $persistedContact->getPhone());
         $this->assertNotNull($persistedContact->getId());
         $this->assertResponseIsSuccessful();
     }
@@ -39,7 +48,7 @@ class ContactControllerPOSTTest extends WebTestCase
     {
         $body = [
             'name' => '',
-            'phone' => '+37066611111',
+            'phone' => self::PHONE,
         ];
         $client = $this->makePostRequestWithBody($body);
         $response = $client->getResponse();
@@ -51,7 +60,7 @@ class ContactControllerPOSTTest extends WebTestCase
     public function testCreateContactMissingPhone(): void
     {
         $body = [
-            'name' => 'Simonyte',
+            'name' => self::NAME_SIMONYTE,
         ];
         $client = $this->makePostRequestWithBody($body);
         $response = $client->getResponse();
@@ -63,7 +72,7 @@ class ContactControllerPOSTTest extends WebTestCase
     public function testCreateContactTooShortPhone(): void
     {
         $body = [
-            'name' => 'Simonyte',
+            'name' => self::NAME_SIMONYTE,
             'phone' => '',
         ];
         $client = $this->makePostRequestWithBody($body);
@@ -79,8 +88,8 @@ class ContactControllerPOSTTest extends WebTestCase
     public function testCreateContactPhoneTooLong(): void
     {
         $body = [
-            'name' => 'Simonyte',
-            'phone' => '111111111111111111111111111111111111111111111',
+            'name' => self::NAME_SIMONYTE,
+            'phone' => self::TOO_LONG_PHONE,
         ];
         $client = $this->makePostRequestWithBody($body);
         $response = $client->getResponse();
@@ -96,14 +105,14 @@ class ContactControllerPOSTTest extends WebTestCase
     {
         $client = static::createClient();
         $client->request(
-            'POST',
-            '/api/login',
+            Request::METHOD_POST,
+            self::API_LOGIN_URI,
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
-                'username' => 'user7',
-                'password' => 'secret123',
+                'username' => self::EXISTING_USERNAME,
+                'password' => self::EXISTING_USER_PASSWORD,
             ])
         );
 
@@ -118,8 +127,8 @@ class ContactControllerPOSTTest extends WebTestCase
     {
         $client = $this->getAuthenticatedClient();
         $client->request(
-            'POST',
-            '/api/v1/contact',
+            Request::METHOD_POST,
+            self::API_V_1_CONTACT_URI,
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
