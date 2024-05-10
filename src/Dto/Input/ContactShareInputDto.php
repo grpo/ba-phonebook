@@ -4,27 +4,31 @@ declare(strict_types=1);
 
 namespace App\Dto\Input;
 
-use App\Dto\DtoInterface;
-use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\Type;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotNull;
-use Symfony\Component\Validator\Constraints\Uuid;
+use App\Constants\AbstractSerializationConstants;
+use App\Dto\AbstractDTO;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Constraint;
 
-class ContactShareInputDto implements DtoInterface
+class ContactShareInputDto extends AbstractDTO
 {
-    #[Uuid]
-    #[NotBlank]
-    #[NotNull]
-    #[Type('string')]
-    #[Groups(['default'])]
+    #[Constraint\Uuid]
+    #[Constraint\NotBlank]
+    #[Constraint\NotNull]
+    #[JMS\Type(AbstractSerializationConstants::TYPE_STRING)]
+    #[JMS\Groups([
+        AbstractSerializationConstants::GROUP_DEFAULT,
+        AbstractSerializationConstants::GROUP_CONTACT,
+    ])]
     private string $userId;
 
-    #[Uuid]
-    #[NotBlank]
-    #[NotNull]
-    #[Type('string')]
-    #[Groups(['default'])]
+    #[Constraint\Uuid]
+    #[Constraint\NotBlank]
+    #[Constraint\NotNull]
+    #[JMS\Type(AbstractSerializationConstants::TYPE_STRING)]
+    #[JMS\Groups([
+        AbstractSerializationConstants::GROUP_DEFAULT,
+        AbstractSerializationConstants::GROUP_CONTACT,
+    ])]
     private string $contactId;
 
     public function getUserId(): string

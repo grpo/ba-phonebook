@@ -10,7 +10,7 @@ use App\Service\UserProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class ApiController extends AbstractController
+abstract class AbstractApiController extends AbstractController
 {
     public function __construct(
         protected readonly ApiSerializer $serializer,

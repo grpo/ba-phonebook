@@ -6,7 +6,7 @@ namespace App\Service;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class RequestParser
+class RequestHeaderParser
 {
     public function getBearerToken(Request $request): ?string
     {

@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\Dto\Input\ContactShareInputDto;
-use App\Entity\Contact;
-use App\Entity\User;
 use App\Repository\ContactRepository;
 use App\Repository\UserRepository;
 use App\Service\ApiSerializer;
@@ -14,32 +12,36 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
-class ShareContactController extends ApiController
+class ShareContactControllerAbstract extends AbstractApiController
 {
+    const SHARE = 'share';
+    const UN_SHARE = 'unshare';
+
     public function __construct
     (
-        ApiSerializer $serializer,
-        EntityManagerInterface $entityManager,
-        UserProvider $userProvider,
-        private Validator $validator,
-        private ContactRepository $contactRepository,
-        private UserRepository $userRepository,
+        ApiSerializer                      $serializer,
+        EntityManagerInterface             $entityManager,
+        UserProvider                       $userProvider,
+        private readonly Validator         $validator,
+        private readonly ContactRepository $contactRepository,
+        private readonly UserRepository    $userRepository,
     ) {
         parent::__construct($serializer, $entityManager, $userProvider);
     }
 
-    #[Route('/share', name: 'app_contact_share', methods: ['POST'])]
+    #[Route('/share', name: 'app_contact_share', methods: [Request::METHOD_POST])]
     public function postShareAction(Request $request): JsonResponse
     {
-        return $this->shareContact('share', $request);
+        return $this->shareContact(self::SHARE, $request);
     }
 
-    #[Route('/unshare', name: 'app_contact_un-share', methods: ['POST'])]
+    #[Route('/unshare', name: 'app_contact_un-share', methods: [Request::METHOD_POST])]
     public function postUnShareAction(Request $request): JsonResponse
     {
-        return $this->shareContact('unshare', $request);
+        return $this->shareContact(self::UN_SHARE, $request);
     }
 
     private function shareContact(string $action, Request $request): JsonResponse
@@ -59,12 +61,11 @@ class ShareContactController extends ApiController
             return new JsonResponse([], Response::HTTP_NOT_FOUND);
         }
 
-        if ($action === 'share') {
-            $contact->shareWith($user);
-        }
-        if ($action === 'unshare') {
-            $contact->unShareWith($user);
-        }
+        match ($action) {
+            self::SHARE => $contact->shareWith($user),
+            self::UN_SHARE => $contact->unShareWith($user),
+            default => throw new BadRequestHttpException()
+        };
 
         $this->entityManager->persist($contact);
         $this->entityManager->flush();
