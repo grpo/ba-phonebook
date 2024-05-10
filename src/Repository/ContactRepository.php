@@ -53,5 +53,6 @@ class ContactRepository extends ServiceEntityRepository
                 return $con;
             }
         }
+        return [];
     }
 }
